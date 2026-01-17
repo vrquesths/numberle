@@ -2,7 +2,10 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
     <title>Numberle - Sayı Tahmin Oyunu</title>
     <style>
         * {
@@ -14,11 +17,18 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
+            min-height: -webkit-fill-available;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
             transition: background 0.5s ease;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        html {
+            height: -webkit-fill-available;
         }
 
         /* Zorluk temalarına göre arkaplanlar */
@@ -207,6 +217,8 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 500px;
             width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
             animation: fadeIn 0.5s ease;
             transition: background 0.3s ease, color 0.3s ease;
         }
@@ -215,12 +227,31 @@
             display: block;
         }
 
+        /* Smooth scrolling */
+        .screen::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .screen::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .screen::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 4px;
+        }
+
+        .screen::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.5);
+        }
+
         /* Responsive tasarım */
         @media (max-width: 768px) {
             .screen {
                 padding: 25px;
                 border-radius: 15px;
                 max-width: 100%;
+                max-height: 85vh;
             }
 
             body {
@@ -230,12 +261,55 @@
 
         @media (max-width: 480px) {
             .screen {
-                padding: 20px;
+                padding: 20px 15px;
                 border-radius: 10px;
+                max-height: 80vh;
             }
 
             body {
                 padding: 5px;
+                align-items: flex-start;
+                padding-top: 10px;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-height: 600px) {
+            .screen {
+                max-height: 95vh;
+                padding: 15px;
+            }
+
+            body {
+                padding: 5px;
+            }
+
+            .logo {
+                font-size: 3em !important;
+                margin-bottom: 10px !important;
+            }
+
+            .welcome-screen h1 {
+                font-size: 1.8em !important;
+            }
+
+            .start-btn {
+                padding: 12px 35px !important;
+                font-size: 1em !important;
+            }
+        }
+
+        /* Landscape mode on mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .screen {
+                max-height: 90vh;
+                padding: 15px;
+            }
+
+            .game-board {
+                min-height: auto;
+                max-height: 200px;
+                overflow-y: auto;
             }
         }
 
@@ -484,6 +558,19 @@
         .game-board {
             margin-bottom: 30px;
             min-height: 350px;
+        }
+
+        @media (max-width: 768px) {
+            .game-board {
+                min-height: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-board {
+                min-height: 200px;
+                margin-bottom: 20px;
+            }
         }
 
         .guess-row {
@@ -1009,6 +1096,30 @@
                 left: 20px;
                 bottom: 80px;
                 max-height: 60vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .notebook {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3em;
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .notebook-panel {
+                width: calc(100vw - 20px);
+                right: 10px;
+                left: 10px;
+                bottom: 65px;
+                max-height: 50vh;
+                padding: 15px;
+            }
+
+            .notebook-textarea {
+                min-height: 150px;
+                font-size: 0.9em;
             }
         }
 

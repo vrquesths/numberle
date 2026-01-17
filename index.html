@@ -50,6 +50,155 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            .screen {
+                background: #1a1a2e;
+                color: #e0e0e0;
+            }
+
+            .welcome-screen h1,
+            .difficulty-screen h2,
+            .mode-screen h2,
+            .tutorial-screen h2,
+            .game-title {
+                color: #a6b1ff;
+            }
+
+            .welcome-screen p,
+            .tutorial-section p,
+            .stat-label {
+                color: #b0b0b0;
+            }
+
+            .digit-box {
+                background: #2a2a3e;
+                border-color: #3a3a4e;
+                color: #e0e0e0;
+            }
+
+            .digit-box.correct {
+                background-color: #6aaa64;
+                border-color: #6aaa64;
+            }
+
+            .digit-box.present {
+                background-color: #c9b458;
+                border-color: #c9b458;
+            }
+
+            .digit-box.absent {
+                background-color: #4a4a5e;
+                border-color: #4a4a5e;
+            }
+
+            #guessInput {
+                background: #2a2a3e;
+                border-color: #3a3a4e;
+                color: #e0e0e0;
+            }
+
+            #guessInput::placeholder {
+                color: #6a6a7e;
+            }
+
+            #guessInput:focus {
+                border-color: #a6b1ff;
+            }
+
+            .stats {
+                background: #2a2a3e;
+                border: 1px solid #3a3a4e;
+            }
+
+            .stat-value {
+                color: #a6b1ff;
+            }
+
+            .stat-label {
+                color: #b0b0b0;
+            }
+
+            .message.info {
+                color: #a6b1ff;
+            }
+
+            .rules {
+                background: #2a2a3e;
+                border: 1px solid #3a3a4e;
+            }
+
+            .rules h3 {
+                color: #a6b1ff;
+            }
+
+            .tutorial-section h3 {
+                color: #a6b1ff;
+            }
+
+            .tutorial-note {
+                background: #2a2a1e;
+                border-left-color: #ffc107;
+            }
+
+            .tutorial-note strong {
+                color: #ffd54f;
+            }
+
+            .back-btn {
+                background: #3a3a4e;
+            }
+
+            .back-btn:hover {
+                background: #4a4a5e;
+            }
+
+            .help-button {
+                background: #2a2a3e;
+                border-color: #a6b1ff;
+                color: #a6b1ff;
+            }
+
+            .help-button:hover {
+                background: #a6b1ff;
+                color: #1a1a2e;
+            }
+
+            .feedback-item {
+                background: #2a2a3e;
+                color: #e0e0e0;
+            }
+
+            .feedback-item.green {
+                background: #6aaa64;
+                color: white;
+            }
+
+            .feedback-item.yellow {
+                background: #c9b458;
+                color: white;
+            }
+
+            /* Difficulty cards dark mode */
+            .difficulty-card {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            }
+
+            .mode-card {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            }
+
+            /* Keep gradient backgrounds vibrant in dark mode */
+            body.super-easy .screen,
+            body.easy .screen,
+            body.medium .screen,
+            body.hard .screen,
+            body.very-hard .screen,
+            body.impossible .screen {
+                background: #1a1a2e;
+            }
+        }
+
         .screen {
             display: none;
             background: white;
@@ -59,6 +208,7 @@
             max-width: 500px;
             width: 100%;
             animation: fadeIn 0.5s ease;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .screen.active {
@@ -721,6 +871,180 @@
             transform: translateY(-2px);
         }
 
+        /* Notebook */
+        .notebook {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            border: 3px solid #f0c419;
+        }
+
+        .notebook:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .notebook-panel {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            background: #fff9e6;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            z-index: 999;
+            display: none;
+            animation: slideUp 0.3s ease;
+            border: 3px solid #f0c419;
+        }
+
+        .notebook-panel.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notebook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0c419;
+        }
+
+        .notebook-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #8b6914;
+        }
+
+        .notebook-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #8b6914;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .notebook-close:hover {
+            background: #f0c419;
+            color: white;
+        }
+
+        .notebook-content {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .notebook-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 2px solid #f0c419;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            resize: vertical;
+            background: white;
+            color: #333;
+        }
+
+        .notebook-textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(240, 196, 25, 0.1);
+        }
+
+        .notebook-hint {
+            font-size: 0.8em;
+            color: #8b6914;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .notebook {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5em;
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .notebook-panel {
+                width: calc(100vw - 40px);
+                right: 20px;
+                left: 20px;
+                bottom: 80px;
+                max-height: 60vh;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .notebook {
+                background: linear-gradient(135deg, #c9a932 0%, #d4b73e 100%);
+                border-color: #b89a2a;
+            }
+
+            .notebook-panel {
+                background: #2a2a1e;
+                border-color: #c9a932;
+            }
+
+            .notebook-title,
+            .notebook-close,
+            .notebook-hint {
+                color: #d4b73e;
+            }
+
+            .notebook-close:hover {
+                background: #c9a932;
+                color: #1a1a1e;
+            }
+
+            .notebook-textarea {
+                background: #1a1a1e;
+                color: #e0e0e0;
+                border-color: #c9a932;
+            }
+
+            .notebook-header {
+                border-bottom-color: #c9a932;
+            }
+        }
+
         /* Mod Seçim Ekranı */
         .mode-screen h2 {
             text-align: center;
@@ -1031,6 +1355,27 @@
         </div>
     </div>
 
+    <!-- Notebook -->
+    <div class="notebook" onclick="toggleNotebook()" title="Not Defteri">
+        📒
+    </div>
+
+    <div class="notebook-panel" id="notebookPanel">
+        <div class="notebook-header">
+            <div class="notebook-title">📝 Notlarım</div>
+            <button class="notebook-close" onclick="toggleNotebook()">×</button>
+        </div>
+        <div class="notebook-content">
+            <textarea class="notebook-textarea" id="notebookText" placeholder="Buraya tahminlerinizi, ipuçlarını veya stratejilerinizi yazabilirsiniz...
+
+Örnek:
+- 3 ve 7 sayıda var ama yeri yanlış
+- 1 sayıda yok
+- İlk rakam 5 olabilir"></textarea>
+            <div class="notebook-hint">💡 Notlarınız otomatik kaydedilir • 🔄 Yeni oyunda sıfırlanır</div>
+        </div>
+    </div>
+
     <script>
         let secretNumber = '';
         let attempts = 0;
@@ -1184,6 +1529,15 @@
             document.getElementById('message').className = 'message';
             document.getElementById('attempts').textContent = '0';
             console.log('Gizli sayı:', secretNumber);
+            
+            // Not defterini sıfırla
+            clearNotebook();
+        }
+
+        function clearNotebook() {
+            const notebookText = document.getElementById('notebookText');
+            notebookText.value = '';
+            localStorage.removeItem('numberleNotes');
         }
 
         function makeGuess() {
@@ -1377,6 +1731,33 @@
         // Sayfa yüklendiğinde istatistikleri güncelle
         document.getElementById('gamesPlayed').textContent = gamesPlayed;
         document.getElementById('gamesWon').textContent = gamesWon;
+
+        // Notebook fonksiyonları
+        function toggleNotebook() {
+            const panel = document.getElementById('notebookPanel');
+            panel.classList.toggle('active');
+        }
+
+        // Notebook otomatik kaydetme
+        const notebookText = document.getElementById('notebookText');
+        const savedNotes = localStorage.getItem('numberleNotes');
+        if (savedNotes) {
+            notebookText.value = savedNotes;
+        }
+
+        notebookText.addEventListener('input', function() {
+            localStorage.setItem('numberleNotes', this.value);
+        });
+
+        // Notebook dışına tıklandığında kapat
+        document.addEventListener('click', function(event) {
+            const notebook = document.querySelector('.notebook');
+            const panel = document.getElementById('notebookPanel');
+            
+            if (!notebook.contains(event.target) && !panel.contains(event.target)) {
+                panel.classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>

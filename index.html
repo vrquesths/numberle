@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numberle - Sayı Tahmin Oyunu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        /* Zorluk temalarına göre arkaplanlar */
+        body.super-easy {
+            background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+        }
+
+        body.easy {
+            background: linear-gradient(135deg, #8bc34a 0%, #aed581 100%);
+        }
+
+        body.medium {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+        }
+
+        body.hard {
+            background: linear-gradient(135deg, #ff9800 0%, #fb8c00 100%);
+        }
+
+        body.very-hard {
+            background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+        }
+
+        body.impossible {
+            background: linear-gradient(135deg, #9c27b0 0%, #8e24aa 100%);
+        }
+
+        body.default {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .screen {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Responsive tasarım */
+        @media (max-width: 768px) {
+            .screen {
+                padding: 25px;
+                border-radius: 15px;
+                max-width: 100%;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .screen {
+                padding: 20px;
+                border-radius: 10px;
+            }
+
+            body {
+                padding: 5px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Açılış Ekranı */
+        .welcome-screen {
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .welcome-screen h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .welcome-screen p {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+
+        .start-btn {
+            padding: 20px 60px;
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 4em;
+            }
+
+            .welcome-screen h1 {
+                font-size: 2.5em;
+            }
+
+            .welcome-screen p {
+                font-size: 1em;
+                margin-bottom: 30px;
+            }
+
+            .start-btn {
+                padding: 18px 50px;
+                font-size: 1.3em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 3em;
+                margin-bottom: 15px;
+            }
+
+            .welcome-screen h1 {
+                font-size: 2em;
+            }
+
+            .welcome-screen p {
+                font-size: 0.9em;
+                margin-bottom: 25px;
+            }
+
+            .start-btn {
+                padding: 15px 40px;
+                font-size: 1.1em;
+            }
+        }
+
+        /* Zorluk Seçim Ekranı */
+        .difficulty-screen h2 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .difficulty-card {
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .difficulty-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .difficulty-card.super-easy {
+            background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+            color: white;
+        }
+
+        .difficulty-card.easy {
+            background: linear-gradient(135deg, #8bc34a 0%, #aed581 100%);
+            color: white;
+        }
+
+        .difficulty-card.medium {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            color: white;
+        }
+
+        .difficulty-card.hard {
+            background: linear-gradient(135deg, #ff9800 0%, #fb8c00 100%);
+            color: white;
+        }
+
+        .difficulty-card.very-hard {
+            background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+            color: white;
+        }
+
+        .difficulty-card.impossible {
+            background: linear-gradient(135deg, #9c27b0 0%, #8e24aa 100%);
+            color: white;
+        }
+
+        .difficulty-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            pointer-events: none;
+        }
+
+        .difficulty-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            pointer-events: none;
+        }
+
+        .difficulty-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        .back-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        /* Oyun Ekranı */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .game-title {
+            font-size: 1.8em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .difficulty-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 1.5em;
+            }
+
+            .difficulty-badge {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 1.3em;
+            }
+
+            .difficulty-badge {
+                padding: 5px 10px;
+                font-size: 0.75em;
+            }
+        }
+
+        .game-board {
+            margin-bottom: 30px;
+            min-height: 350px;
+        }
+
+        .guess-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .guess-numbers {
+            display: flex;
+            gap: 10px;
+        }
+
+        .guess-feedback {
+            display: flex;
+            gap: 15px;
+            margin-left: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .guess-feedback {
+                margin-left: 10px;
+                gap: 10px;
+                font-size: 0.85em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .guess-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .guess-feedback {
+                margin-left: 0;
+                margin-top: 5px;
+                gap: 8px;
+                font-size: 0.8em;
+            }
+
+            .guess-numbers {
+                gap: 5px !important;
+            }
+        }
+
+        .feedback-item {
+            padding: 5px 12px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .feedback-item.green {
+            background: #6aaa64;
+            color: white;
+        }
+
+        .feedback-item.yellow {
+            background: #c9b458;
+            color: white;
+        }
+
+        .digit-box {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .digit-box {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .digit-box {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1em;
+            }
+        }
+
+        .digit-box.correct {
+            background-color: #6aaa64;
+            color: white;
+            border-color: #6aaa64;
+        }
+
+        .digit-box.present {
+            background-color: #c9b458;
+            color: white;
+            border-color: #c9b458;
+        }
+
+        .digit-box.absent {
+            background-color: #787c7e;
+            color: white;
+            border-color: #787c7e;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #guessInput {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+
+        #guessInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .guess-btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        .guess-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .guess-btn:active {
+            transform: scale(0.95);
+        }
+
+        .guess-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1em;
+            min-height: 30px;
+            font-weight: bold;
+        }
+
+        .message.success {
+            color: #6aaa64;
+        }
+
+        .message.error {
+            color: #dc3545;
+        }
+
+        .message.info {
+            color: #667eea;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .new-game-btn, .change-difficulty-btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .new-game-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .change-difficulty-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .new-game-btn:hover, .change-difficulty-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .rules {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .rules h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .color-legend {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85em;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        /* Tutorial Ekranı */
+        .tutorial-screen {
+            max-width: 600px;
+        }
+
+        .tutorial-screen h2 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+
+        .tutorial-section {
+            margin-bottom: 30px;
+        }
+
+        .tutorial-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .tutorial-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .example-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .example-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .tutorial-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .tutorial-note strong {
+            color: #856404;
+        }
+
+        .tutorial-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .tutorial-btns button {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .skip-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .start-playing-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tutorial-btns button:hover {
+            transform: translateY(-2px);
+        }
+
+        .random-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            grid-column: span 2;
+        }
+
+        .help-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .help-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Mod Seçim Ekranı */
+        .mode-screen h2 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+
+        .mode-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .mode-card {
+            padding: 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .mode-card.classic-mode {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .mode-card.numberless-mode {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .mode-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            pointer-events: none;
+        }
+
+        .mode-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            pointer-events: none;
+        }
+
+        .mode-desc {
+            font-size: 1em;
+            opacity: 0.95;
+            line-height: 1.6;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .mode-icon {
+                font-size: 3.5em;
+            }
+
+            .mode-name {
+                font-size: 1.6em;
+            }
+
+            .mode-desc {
+                font-size: 0.95em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mode-icon {
+                font-size: 3em;
+                margin-bottom: 10px;
+            }
+
+            .mode-name {
+                font-size: 1.4em;
+            }
+
+            .mode-desc {
+                font-size: 0.9em;
+            }
+        }
+
+        .feedback-info {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            font-size: 0.95em;
+            pointer-events: none;
+        }
+
+        .feedback-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="default">
+    <!-- Açılış Ekranı -->
+    <div class="screen active welcome-screen" id="welcomeScreen">
+        <div class="logo">🔢</div>
+        <h1>Numberle</h1>
+        <p>Sayı Tahmin Oyunu</p>
+        <button class="start-btn" onclick="showModeScreen()">Başla</button>
+    </div>
+
+    <!-- Mod Seçim Ekranı -->
+    <div class="screen mode-screen" id="modeScreen">
+        <h2>🎮 Oyun Modu Seç</h2>
+        <div class="mode-grid">
+            <div class="mode-card classic-mode" onclick="selectMode('classic')">
+                <div class="mode-icon">🎯</div>
+                <div class="mode-name">Numberle</div>
+                <div class="mode-desc">Klasik mod - Her rakamın rengini gör</div>
+                <div class="feedback-info">
+                    <div class="feedback-badge">
+                        🟩 Yeşil: Doğru yerde
+                    </div>
+                    <div class="feedback-badge">
+                        🟨 Sarı: Yanlış yerde
+                    </div>
+                </div>
+            </div>
+            <div class="mode-card numberless-mode" onclick="selectMode('numberless')">
+                <div class="mode-icon">🔥</div>
+                <div class="mode-name">Numberless</div>
+                <div class="mode-desc">Zorlu mod - Sadece toplam sayıları gör</div>
+                <div class="feedback-info">
+                    <div class="feedback-badge">
+                        🟩 Yeşil: 2
+                    </div>
+                    <div class="feedback-badge">
+                        🟨 Sarı: 1
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="back-btn" onclick="showWelcomeScreen()">⬅ Geri</button>
+    </div>
+
+    <!-- Tutorial Ekranı -->
+    <div class="screen tutorial-screen" id="tutorialScreen">
+        <h2>📚 Nasıl Oynanır?</h2>
+
+        <div class="tutorial-section">
+            <h3>🎯 Oyunun Amacı</h3>
+            <p>Bilgisayarın tuttuğu gizli sayıyı tahmin etmek! Her tahminde size ipuçları verilecek.</p>
+        </div>
+
+        <div class="tutorial-section">
+            <h3>🎨 Renk Kodları</h3>
+            
+            <p><strong>Yeşil:</strong> Rakam doğru ve doğru yerde!</p>
+            <div class="example-row">
+                <div class="example-box" style="background-color: #6aaa64;">5</div>
+                <div class="example-box" style="background-color: #787c7e;">2</div>
+                <div class="example-box" style="background-color: #787c7e;">8</div>
+                <div class="example-box" style="background-color: #787c7e;">1</div>
+            </div>
+            <p style="text-align: center; color: #666; font-size: 0.9em;">Gizli sayı 5 ile başlıyor!</p>
+
+            <p style="margin-top: 20px;"><strong>Sarı:</strong> Rakam sayıda var ama yanlış yerde!</p>
+            <div class="example-row">
+                <div class="example-box" style="background-color: #c9b458;">3</div>
+                <div class="example-box" style="background-color: #787c7e;">7</div>
+                <div class="example-box" style="background-color: #c9b458;">4</div>
+                <div class="example-box" style="background-color: #787c7e;">9</div>
+            </div>
+            <p style="text-align: center; color: #666; font-size: 0.9em;">3 ve 4 sayıda var ama farklı yerlerde!</p>
+
+            <p style="margin-top: 20px;"><strong>Gri:</strong> Rakam sayıda yok!</p>
+            <div class="example-row">
+                <div class="example-box" style="background-color: #787c7e;">8</div>
+                <div class="example-box" style="background-color: #787c7e;">9</div>
+                <div class="example-box" style="background-color: #787c7e;">2</div>
+                <div class="example-box" style="background-color: #787c7e;">1</div>
+            </div>
+            <p style="text-align: center; color: #666; font-size: 0.9em;">Bu rakamların hiçbiri gizli sayıda yok!</p>
+        </div>
+
+        <div class="tutorial-section">
+            <h3>⚡ Kurallar</h3>
+            <p>• Her rakam sadece bir kez kullanılabilir (tekrar eden rakam yok)</p>
+            <p>• Zorluk seviyesine göre farklı sayıda tahmin hakkınız var</p>
+            <p>• İpuçlarını kullanarak doğru sayıyı bulmaya çalışın</p>
+        </div>
+
+        <div class="tutorial-note">
+            <strong>💡 İpucu:</strong> Kolay seviyelerden başlayarak oyunu öğrenebilir, sonra daha zor seviyelere geçebilirsiniz!
+        </div>
+
+        <div class="tutorial-btns">
+            <button class="start-playing-btn" onclick="showDifficultyScreen()">Anladım! 🎮</button>
+        </div>
+    </div>
+
+    <!-- Zorluk Seçim Ekranı -->
+    <div class="screen difficulty-screen" id="difficultyScreen">
+        <h2>🎯 Zorluk Seviyesi Seç</h2>
+        <div class="difficulty-grid">
+            <div class="difficulty-card super-easy" onclick="startGame('super-easy')">
+                <div class="difficulty-icon">🌟</div>
+                <div class="difficulty-name">Süper Kolay</div>
+                <div class="difficulty-desc">3 rakam - 10 tahmin</div>
+            </div>
+            <div class="difficulty-card easy" onclick="startGame('easy')">
+                <div class="difficulty-icon">😊</div>
+                <div class="difficulty-name">Kolay</div>
+                <div class="difficulty-desc">4 rakam - 10 tahmin</div>
+            </div>
+            <div class="difficulty-card medium" onclick="startGame('medium')">
+                <div class="difficulty-icon">😐</div>
+                <div class="difficulty-name">Orta</div>
+                <div class="difficulty-desc">5 rakam - 10 tahmin</div>
+            </div>
+            <div class="difficulty-card hard" onclick="startGame('hard')">
+                <div class="difficulty-icon">😅</div>
+                <div class="difficulty-name">Zor</div>
+                <div class="difficulty-desc">5 rakam - 5 tahmin</div>
+            </div>
+            <div class="difficulty-card very-hard" onclick="startGame('very-hard')">
+                <div class="difficulty-icon">😰</div>
+                <div class="difficulty-name">Çok Zor</div>
+                <div class="difficulty-desc">10 rakam - 5 tahmin</div>
+            </div>
+            <div class="difficulty-card impossible" onclick="startGame('impossible')">
+                <div class="difficulty-icon">💀</div>
+                <div class="difficulty-name">İmkansız</div>
+                <div class="difficulty-desc">10 rakam - 3 tahmin</div>
+            </div>
+            <div class="difficulty-card random-card" onclick="startRandomGame()">
+                <div class="difficulty-icon">🎲</div>
+                <div class="difficulty-name">Rastgele</div>
+                <div class="difficulty-desc">Sürpriz zorluk!</div>
+            </div>
+        </div>
+        <button class="help-button" onclick="showTutorialScreen()">❓ Nasıl Oynanır?</button>
+        <button class="back-btn" onclick="showWelcomeScreen()">⬅ Geri</button>
+    </div>
+
+    <!-- Oyun Ekranı -->
+    <div class="screen game-screen" id="gameScreen">
+        <div class="game-header">
+            <div class="game-title">🔢 Numberle</div>
+            <div class="difficulty-badge" id="difficultyBadge">Kolay</div>
+        </div>
+
+        <div class="rules">
+            <h3>Nasıl Oynanır?</h3>
+            <div class="color-legend">
+                <div class="legend-item">
+                    <div class="legend-box" style="background-color: #6aaa64;"></div>
+                    <span>Yeşil - Doğru yerde</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background-color: #c9b458;"></div>
+                    <span>Sarı - Yanlış yerde</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background-color: #787c7e;"></div>
+                    <span>Gri - Sayıda yok</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-board" id="gameBoard"></div>
+
+        <div class="input-section">
+            <input type="tel" id="guessInput" placeholder="____" autocomplete="off" inputmode="numeric" pattern="[0-9]*">
+            <button class="guess-btn" id="guessBtn" onclick="makeGuess()">Tahmin Et</button>
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="attempts">0</div>
+                <div class="stat-label">Tahmin</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="gamesPlayed">0</div>
+                <div class="stat-label">Oyun</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="gamesWon">0</div>
+                <div class="stat-label">Kazanılan</div>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button class="new-game-btn" onclick="newGame()">🎮 Yeni Oyun</button>
+            <button class="change-difficulty-btn" onclick="showDifficultyScreen()">🎯 Zorluk Değiştir</button>
+        </div>
+    </div>
+
+    <script>
+        let secretNumber = '';
+        let attempts = 0;
+        let gameOver = false;
+        let gamesPlayed = parseInt(localStorage.getItem('gamesPlayed') || '0');
+        let gamesWon = parseInt(localStorage.getItem('gamesWon') || '0');
+        let currentDifficulty = 'easy';
+        let gameMode = 'classic'; // 'classic' veya 'numberless'
+        const maxAttempts = 5;
+
+        const difficultySettings = {
+            'super-easy': { 
+                digits: 3,
+                maxDigit: 9,
+                attempts: 10,
+                name: 'Süper Kolay', 
+                icon: '🌟',
+                color: '#4caf50'
+            },
+            'easy': { 
+                digits: 4,
+                maxDigit: 9,
+                attempts: 10,
+                name: 'Kolay', 
+                icon: '😊',
+                color: '#8bc34a'
+            },
+            'medium': { 
+                digits: 5,
+                maxDigit: 9,
+                attempts: 10,
+                name: 'Orta', 
+                icon: '😐',
+                color: '#ffc107'
+            },
+            'hard': { 
+                digits: 5,
+                maxDigit: 9,
+                attempts: 5,
+                name: 'Zor', 
+                icon: '😅',
+                color: '#ff9800'
+            },
+            'very-hard': { 
+                digits: 10,
+                maxDigit: 9,
+                attempts: 5,
+                name: 'Çok Zor', 
+                icon: '😰',
+                color: '#f44336'
+            },
+            'impossible': { 
+                digits: 10,
+                maxDigit: 9,
+                attempts: 3,
+                name: 'İmkansız', 
+                icon: '💀',
+                color: '#9c27b0'
+            }
+        };
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showWelcomeScreen() {
+            showScreen('welcomeScreen');
+            document.body.className = 'default';
+        }
+
+        function showModeScreen() {
+            showScreen('modeScreen');
+            document.body.className = 'default';
+        }
+
+        function selectMode(mode) {
+            gameMode = mode;
+            showDifficultyScreen();
+        }
+
+        function showTutorialScreen() {
+            showScreen('tutorialScreen');
+            document.body.className = 'default';
+        }
+
+        function showDifficultyScreen() {
+            showScreen('difficultyScreen');
+            document.body.className = 'default';
+        }
+
+        function startGame(difficulty) {
+            currentDifficulty = difficulty;
+            
+            // Temayı değiştir
+            document.body.className = difficulty;
+            
+            // Zorluk rozetini güncelle
+            const setting = difficultySettings[difficulty];
+            const badge = document.getElementById('difficultyBadge');
+            badge.textContent = `${setting.icon} ${setting.name}`;
+            badge.style.backgroundColor = setting.color;
+            
+            // Oyun ekranına geç
+            showScreen('gameScreen');
+            
+            // Oyunu başlat
+            newGame();
+        }
+
+        function startRandomGame() {
+            const difficulties = ['super-easy', 'easy', 'medium', 'hard', 'very-hard', 'impossible'];
+            const randomDifficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
+            startGame(randomDifficulty);
+        }
+
+        function generateSecretNumber() {
+            const setting = difficultySettings[currentDifficulty];
+            const maxDigit = setting.maxDigit;
+            const numDigits = setting.digits;
+            const digits = [];
+            while (digits.length < numDigits) {
+                const digit = Math.floor(Math.random() * (maxDigit + 1)).toString();
+                if (!digits.includes(digit)) {
+                    digits.push(digit);
+                }
+            }
+            return digits.join('');
+        }
+
+        function newGame() {
+            secretNumber = generateSecretNumber();
+            attempts = 0;
+            gameOver = false;
+            
+            const setting = difficultySettings[currentDifficulty];
+            const numDigits = setting.digits;
+            
+            // Input max length ayarla
+            const input = document.getElementById('guessInput');
+            input.maxLength = numDigits;
+            input.placeholder = '_'.repeat(numDigits);
+            
+            document.getElementById('gameBoard').innerHTML = '';
+            input.value = '';
+            input.disabled = false;
+            document.getElementById('guessBtn').disabled = false;
+            document.getElementById('message').textContent = '';
+            document.getElementById('message').className = 'message';
+            document.getElementById('attempts').textContent = '0';
+            console.log('Gizli sayı:', secretNumber);
+        }
+
+        function makeGuess() {
+            if (gameOver) return;
+
+            const guess = document.getElementById('guessInput').value;
+            const messageEl = document.getElementById('message');
+            const setting = difficultySettings[currentDifficulty];
+            const maxDigit = setting.maxDigit;
+            const numDigits = setting.digits;
+            const maxAttempts = setting.attempts;
+
+            // Validasyon
+            if (guess.length !== numDigits) {
+                messageEl.textContent = `${numDigits} basamaklı bir sayı girin!`;
+                messageEl.className = 'message error';
+                return;
+            }
+
+            if (!/^\d+$/.test(guess)) {
+                messageEl.textContent = 'Sadece rakam girin!';
+                messageEl.className = 'message error';
+                return;
+            }
+
+            // Tekrar eden rakam kontrolü
+            const uniqueDigits = new Set(guess);
+            if (uniqueDigits.size !== numDigits) {
+                messageEl.textContent = 'Tüm rakamlar farklı olmalı!';
+                messageEl.className = 'message error';
+                return;
+            }
+
+            // Zorluk seviyesine göre rakam kontrolü
+            for (let digit of guess) {
+                if (parseInt(digit) > maxDigit) {
+                    messageEl.textContent = `Sadece 0-${maxDigit} arası rakamlar kullanabilirsiniz!`;
+                    messageEl.className = 'message error';
+                    return;
+                }
+            }
+
+            attempts++;
+            document.getElementById('attempts').textContent = attempts;
+
+            // Her rakamı kontrol et
+            const secretArray = secretNumber.split('');
+            const guessArray = guess.split('');
+            const usedSecret = new Array(numDigits).fill(false);
+            const colors = new Array(numDigits).fill('');
+
+            // Önce doğru yerdeki rakamları işaretle (yeşil)
+            for (let i = 0; i < numDigits; i++) {
+                if (guessArray[i] === secretArray[i]) {
+                    colors[i] = 'correct';
+                    usedSecret[i] = true;
+                }
+            }
+
+            // Sonra yanlış yerdeki rakamları işaretle (sarı)
+            for (let i = 0; i < numDigits; i++) {
+                if (colors[i] === '') {
+                    let found = false;
+                    for (let j = 0; j < numDigits; j++) {
+                        if (!usedSecret[j] && guessArray[i] === secretArray[j] && i !== j) {
+                            colors[i] = 'present';
+                            usedSecret[j] = true;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        colors[i] = 'absent';
+                    }
+                }
+            }
+
+            // Tahmin satırı oluştur
+            const guessRow = document.createElement('div');
+            guessRow.className = 'guess-row';
+
+            if (gameMode === 'classic') {
+                // Klasik mod - Her rakamı renkli kutularla göster
+                const guessNumbers = document.createElement('div');
+                guessNumbers.className = 'guess-numbers';
+
+                for (let i = 0; i < numDigits; i++) {
+                    const digitBox = document.createElement('div');
+                    digitBox.className = 'digit-box';
+                    digitBox.textContent = guessArray[i];
+                    
+                    setTimeout(() => {
+                        digitBox.classList.add(colors[i]);
+                    }, i * 100);
+                    
+                    guessNumbers.appendChild(digitBox);
+                }
+                guessRow.appendChild(guessNumbers);
+            } else {
+                // Numberless mod - Sadece sayıları ve toplam geri bildirimi göster
+                const guessNumbers = document.createElement('div');
+                guessNumbers.className = 'guess-numbers';
+
+                for (let i = 0; i < numDigits; i++) {
+                    const digitBox = document.createElement('div');
+                    digitBox.className = 'digit-box';
+                    digitBox.textContent = guessArray[i];
+                    digitBox.style.borderColor = '#ddd';
+                    digitBox.style.backgroundColor = 'white';
+                    digitBox.style.color = '#333';
+                    guessNumbers.appendChild(digitBox);
+                }
+
+                // Yeşil ve sarı sayısını hesapla
+                let greenCount = 0;
+                let yellowCount = 0;
+                for (let i = 0; i < numDigits; i++) {
+                    if (colors[i] === 'correct') greenCount++;
+                    else if (colors[i] === 'present') yellowCount++;
+                }
+
+                // Geri bildirim oluştur
+                const feedback = document.createElement('div');
+                feedback.className = 'guess-feedback';
+
+                const greenBadge = document.createElement('div');
+                greenBadge.className = 'feedback-item green';
+                greenBadge.textContent = `Yeşil: ${greenCount}`;
+
+                const yellowBadge = document.createElement('div');
+                yellowBadge.className = 'feedback-item yellow';
+                yellowBadge.textContent = `Sarı: ${yellowCount}`;
+
+                feedback.appendChild(greenBadge);
+                feedback.appendChild(yellowBadge);
+
+                guessRow.appendChild(guessNumbers);
+                guessRow.appendChild(feedback);
+            }
+
+            document.getElementById('gameBoard').appendChild(guessRow);
+            document.getElementById('guessInput').value = '';
+
+            // Kazanma kontrolü
+            if (guess === secretNumber) {
+                setTimeout(() => {
+                    messageEl.textContent = `🎉 Tebrikler! ${attempts} tahminde bildiniz!`;
+                    messageEl.className = 'message success';
+                    gameOver = true;
+                    gamesPlayed++;
+                    gamesWon++;
+                    updateStats();
+                    document.getElementById('guessInput').disabled = true;
+                    document.getElementById('guessBtn').disabled = true;
+                }, numDigits * 100 + 200);
+            } else if (attempts >= maxAttempts) {
+                setTimeout(() => {
+                    messageEl.textContent = `😢 Oyun bitti! Doğru sayı: ${secretNumber}`;
+                    messageEl.className = 'message error';
+                    gameOver = true;
+                    gamesPlayed++;
+                    updateStats();
+                    document.getElementById('guessInput').disabled = true;
+                    document.getElementById('guessBtn').disabled = true;
+                }, numDigits * 100 + 200);
+            } else {
+                messageEl.textContent = `Tahmin ${attempts}/${maxAttempts}`;
+                messageEl.className = 'message info';
+            }
+        }
+
+        function updateStats() {
+            localStorage.setItem('gamesPlayed', gamesPlayed.toString());
+            localStorage.setItem('gamesWon', gamesWon.toString());
+            document.getElementById('gamesPlayed').textContent = gamesPlayed;
+            document.getElementById('gamesWon').textContent = gamesWon;
+        }
+
+        // Enter tuşu ile tahmin
+        document.getElementById('guessInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                makeGuess();
+            }
+        });
+
+        // Sadece rakam girişine izin ver
+        document.getElementById('guessInput').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^\d]/g, '');
+        });
+
+        // Sayfa yüklendiğinde istatistikleri güncelle
+        document.getElementById('gamesPlayed').textContent = gamesPlayed;
+        document.getElementById('gamesWon').textContent = gamesWon;
+    </script>
+</body>
+</html>

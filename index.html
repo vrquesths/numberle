@@ -777,6 +777,264 @@
             margin-top: 5px;
         }
 
+        .hint-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .hint-btn {
+            padding: 12px 25px;
+            font-size: 1em;
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hint-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+        }
+
+        .hint-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .hint-counter {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.9em;
+        }
+
+        .hint-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .hint-modal.active {
+            display: flex;
+        }
+
+        .hint-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        .hint-modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .hint-modal-title {
+            font-size: 1.5em;
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .hint-modal-desc {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .hint-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .hint-option {
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .hint-option:hover {
+            border-color: #ff9800;
+            background: #fff8f0;
+            transform: translateY(-2px);
+        }
+
+        .hint-option-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .hint-option-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .hint-option-desc {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .hint-modal-close {
+            width: 100%;
+            padding: 12px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .hint-modal-close:hover {
+            background: #5a6268;
+        }
+
+        .code-input-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .code-input-section.active {
+            display: block;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ff9800;
+            border-radius: 8px;
+            font-size: 1em;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .code-submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .code-submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .hint-display {
+            background: #fff8f0;
+            border: 2px solid #ff9800;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .hint-display-title {
+            font-weight: bold;
+            color: #ff9800;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .hint-display-text {
+            color: #333;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .ad-container {
+            margin: 20px 0;
+            text-align: center;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border: 2px dashed #ddd;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .hint-modal-content {
+                background: #2a2a3e;
+                color: #e0e0e0;
+            }
+
+            .hint-modal-title {
+                color: #ffa726;
+            }
+
+            .hint-modal-desc {
+                color: #b0b0b0;
+            }
+
+            .hint-option {
+                border-color: #3a3a4e;
+                background: #1a1a2e;
+            }
+
+            .hint-option:hover {
+                border-color: #ff9800;
+                background: #2a2a1e;
+            }
+
+            .hint-option-title {
+                color: #e0e0e0;
+            }
+
+            .hint-option-desc {
+                color: #b0b0b0;
+            }
+
+            .code-input {
+                background: #1a1a2e;
+                color: #e0e0e0;
+                border-color: #ff9800;
+            }
+
+            .hint-display {
+                background: #2a2a1e;
+                border-color: #ff9800;
+            }
+
+            .hint-display-text {
+                color: #e0e0e0;
+            }
+
+            .ad-container {
+                background: #2a2a3e;
+                border-color: #3a3a4e;
+            }
+        }
+
         .game-controls {
             display: flex;
             gap: 10px;
@@ -1445,6 +1703,13 @@
 
         <div class="message" id="message"></div>
 
+        <div class="hint-section">
+            <button class="hint-btn" onclick="openHintModal()" id="hintBtn">
+                💡 İpucu Al
+                <span class="hint-counter" id="hintCounter">3</span>
+            </button>
+        </div>
+
         <div class="stats">
             <div class="stat">
                 <div class="stat-value" id="attempts">0</div>
@@ -1463,6 +1728,49 @@
         <div class="game-controls">
             <button class="new-game-btn" onclick="newGame()">🎮 Yeni Oyun</button>
             <button class="change-difficulty-btn" onclick="showDifficultyScreen()">🎯 Zorluk Değiştir</button>
+        </div>
+    </div>
+
+    <!-- Hint Modal -->
+    <div class="hint-modal" id="hintModal">
+        <div class="hint-modal-content">
+            <div class="hint-modal-header">
+                <div class="hint-modal-title">💡 İpucu Al</div>
+                <div class="hint-modal-desc">Bir ipucu almak için seçeneği seçin</div>
+            </div>
+
+            <div class="hint-options">
+                <div class="hint-option" onclick="showRedeemCode()">
+                    <div class="hint-option-icon">🎫</div>
+                    <div class="hint-option-title">Kod Kullan</div>
+                    <div class="hint-option-desc">Promosyon kodu girin</div>
+                </div>
+                <div class="hint-option" onclick="watchAd()">
+                    <div class="hint-option-icon">📺</div>
+                    <div class="hint-option-title">Reklam İzle</div>
+                    <div class="hint-option-desc">30 saniyelik reklam izle</div>
+                </div>
+            </div>
+
+            <div class="code-input-section" id="codeInputSection">
+                <input type="text" class="code-input" id="codeInput" placeholder="KODU GİRİN" maxlength="20">
+                <button class="code-submit-btn" onclick="redeemCode()">Kodu Kullan</button>
+                <div style="margin-top: 10px; font-size: 0.85em; color: #666; text-align: center;">
+                    Kodları sosyal medyadan takip edin!
+                </div>
+            </div>
+
+            <div class="hint-display" id="hintDisplay" style="display: none;">
+                <div class="hint-display-title">💡 İpucu</div>
+                <div class="hint-display-text" id="hintText"></div>
+            </div>
+
+            <div class="ad-container" id="adContainer" style="display: none;">
+                <!-- Google AdSense will be inserted here -->
+                <div style="color: #999;">Reklam yükleniyor...</div>
+            </div>
+
+            <button class="hint-modal-close" onclick="closeHintModal()">Kapat</button>
         </div>
     </div>
 
@@ -1495,6 +1803,8 @@
         let gamesWon = parseInt(localStorage.getItem('gamesWon') || '0');
         let currentDifficulty = 'easy';
         let gameMode = 'classic'; // 'classic' veya 'numberless'
+        let hintsRemaining = 3;
+        const CODE_API = 'https://numberle.ahakturk14.workers.dev';
         const maxAttempts = 5;
 
         const difficultySettings = {
@@ -1643,6 +1953,9 @@
             
             // Not defterini sıfırla
             clearNotebook();
+            
+            // İpucu sayacını güncelle
+            updateHintCounter();
         }
 
         function clearNotebook() {
@@ -1650,6 +1963,140 @@
             notebookText.value = '';
             localStorage.removeItem('numberleNotes');
         }
+
+        // İpucu Sistemi
+        function updateHintCounter() {
+            const saved = localStorage.getItem('hintsRemaining');
+            if (saved !== null) {
+                hintsRemaining = parseInt(saved);
+            }
+            document.getElementById('hintCounter').textContent = hintsRemaining;
+            document.getElementById('hintBtn').disabled = hintsRemaining <= 0 || gameOver;
+        }
+
+        function openHintModal() {
+            if (gameOver || hintsRemaining <= 0) return;
+            document.getElementById('hintModal').classList.add('active');
+            document.getElementById('codeInputSection').classList.remove('active');
+            document.getElementById('hintDisplay').style.display = 'none';
+            document.getElementById('adContainer').style.display = 'none';
+        }
+
+        function closeHintModal() {
+            document.getElementById('hintModal').classList.remove('active');
+        }
+
+        function showRedeemCode() {
+            document.getElementById('codeInputSection').classList.add('active');
+            document.getElementById('adContainer').style.display = 'none';
+        }
+
+        async function redeemCode() {
+            const code = document.getElementById('codeInput').value.trim().toUpperCase();
+            if (!code) {
+                alert('Lütfen bir kod girin!');
+                return;
+            }
+
+            try {
+                // Cloudflare Worker'a POST request
+                const response = await fetch(CODE_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code: code })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const codeData = result.data;
+                    
+                    // Kullanım sayısını kontrol et
+                    const codeUsage = JSON.parse(localStorage.getItem('codeUsage') || '{}');
+                    const timesUsed = codeUsage[code] || 0;
+                    const maxUses = codeData.maxUses || Infinity;
+                    
+                    if (timesUsed >= maxUses) {
+                        alert(`❌ Bu kodu maksimum ${maxUses} kez kullanabilirsiniz!\nSiz ${timesUsed} kez kullandınız.`);
+                        return;
+                    }
+                    
+                    // Kodu kullan
+                    hintsRemaining += codeData.hints;
+                    localStorage.setItem('hintsRemaining', hintsRemaining);
+                    
+                    // Kullanım sayısını artır
+                    codeUsage[code] = timesUsed + 1;
+                    localStorage.setItem('codeUsage', JSON.stringify(codeUsage));
+                    
+                    const remainingUses = maxUses === Infinity ? '∞' : (maxUses - codeUsage[code]);
+                    alert(`✅ Tebrikler! ${codeData.hints} ipucu kazandınız!\n${codeData.description || ''}\n\nKalan kullanım: ${remainingUses}`);
+                    updateHintCounter();
+                    closeHintModal();
+                    document.getElementById('codeInput').value = '';
+                } else {
+                    alert('❌ Geçersiz kod! Lütfen doğru kodu girin.');
+                }
+            } catch (error) {
+                console.error('Kod doğrulama hatası:', error);
+                alert('⚠️ Kod kontrol edilirken bir hata oluştu. İnternet bağlantınızı kontrol edin.');
+            }
+        }
+
+        function watchAd() {
+            // AdSense reklamı göster
+            document.getElementById('codeInputSection').classList.remove('active');
+            document.getElementById('adContainer').style.display = 'block';
+            
+            // AdSense kodu buraya eklenecek
+            // Simdilik demo amaçlı 5 saniye bekletiyoruz
+            const adContainer = document.getElementById('adContainer');
+            adContainer.innerHTML = `
+                <div style="text-align: center; color: #666;">
+                    <div style="font-size: 3em; margin-bottom: 10px;">📺</div>
+                    <div>Reklam yükleniyor...</div>
+                    <div style="margin-top: 10px; font-size: 0.9em;">
+                        Gerçek uygulamada Google AdSense reklamı gösterilecek
+                    </div>
+                </div>
+            `;
+            
+            // Demo: 5 saniye sonra ipucu ver
+            setTimeout(() => {
+                giveHint();
+            }, 5000);
+        }
+
+        function giveHint() {
+            if (gameOver) {
+                alert('Oyun bitti, ipucu alamazsınız!');
+                closeHintModal();
+                return;
+            }
+
+            // Rastgele bir ipucu ver
+            const secretArray = secretNumber.split('');
+            const randomIndex = Math.floor(Math.random() * secretArray.length);
+            const hint = `${randomIndex + 1}. pozisyondaki rakam: ${secretArray[randomIndex]}`;
+            
+            document.getElementById('hintText').textContent = hint;
+            document.getElementById('hintDisplay').style.display = 'block';
+            document.getElementById('adContainer').style.display = 'none';
+            
+            // İpucu sayısını azalt
+            hintsRemaining--;
+            localStorage.setItem('hintsRemaining', hintsRemaining);
+            updateHintCounter();
+        }
+
+        // Modal dışına tıklandığında kapat
+        document.getElementById('hintModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeHintModal();
+            }
+        });
 
         function makeGuess() {
             if (gameOver) return;
@@ -1842,6 +2289,7 @@
         // Sayfa yüklendiğinde istatistikleri güncelle
         document.getElementById('gamesPlayed').textContent = gamesPlayed;
         document.getElementById('gamesWon').textContent = gamesWon;
+        updateHintCounter();
 
         // Notebook fonksiyonları
         function toggleNotebook() {

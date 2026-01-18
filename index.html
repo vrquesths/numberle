@@ -752,6 +752,81 @@
             color: #667eea;
         }
 
+        .game-over-options {
+            display: none;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .game-over-options.active {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .reveal-btn, .continue-btn, .use-hint-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+
+        .use-hint-btn {
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+            color: white;
+        }
+
+        .use-hint-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+        }
+
+        .use-hint-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 480px) {
+            .game-over-options {
+                flex-direction: column;
+            }
+
+            .reveal-btn, .continue-btn, .use-hint-btn {
+                min-width: 100%;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .message.info {
+                color: #a6b1ff;
+            }
+        }
+
         .stats {
             display: flex;
             justify-content: space-around;
@@ -780,6 +855,10 @@
         .hint-section {
             margin-top: 20px;
             text-align: center;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .hint-btn {
@@ -1654,11 +1733,6 @@
                 <div class="difficulty-name">Çok Zor</div>
                 <div class="difficulty-desc">10 rakam - 5 tahmin</div>
             </div>
-            <div class="difficulty-card impossible" onclick="startGame('impossible')">
-                <div class="difficulty-icon">💀</div>
-                <div class="difficulty-name">İmkansız</div>
-                <div class="difficulty-desc">10 rakam - 3 tahmin</div>
-            </div>
             <div class="difficulty-card random-card" onclick="startRandomGame()">
                 <div class="difficulty-icon">🎲</div>
                 <div class="difficulty-name">Rastgele</div>
@@ -1703,10 +1777,21 @@
 
         <div class="message" id="message"></div>
 
+        <div class="game-over-options" id="gameOverOptions">
+            <button class="use-hint-btn" onclick="useHintFromGameOver()" id="gameOverHintBtn">
+                💡 İpucu Kullan (<span id="gameOverHintCount">0</span>)
+            </button>
+            <button class="continue-btn" onclick="continueGuessing()">▶️ Devam Et</button>
+            <button class="reveal-btn" onclick="revealAnswer()">👁️ Cevabı Göster</button>
+        </div>
+
         <div class="hint-section">
-            <button class="hint-btn" onclick="openHintModal()" id="hintBtn">
-                💡 İpucu Al
+            <button class="hint-btn" onclick="useHintInGame()" id="hintBtn">
+                💡 İpucu Kullan
                 <span class="hint-counter" id="hintCounter">3</span>
+            </button>
+            <button class="hint-btn" onclick="openHintModal()" style="margin-left: 10px;">
+                🎁 İpucu Al
             </button>
         </div>
 
@@ -1847,14 +1932,6 @@
                 name: 'Çok Zor', 
                 icon: '😰',
                 color: '#f44336'
-            },
-            'impossible': { 
-                digits: 10,
-                maxDigit: 9,
-                attempts: 3,
-                name: 'İmkansız', 
-                icon: '💀',
-                color: '#9c27b0'
             }
         };
 
@@ -1910,7 +1987,7 @@
         }
 
         function startRandomGame() {
-            const difficulties = ['super-easy', 'easy', 'medium', 'hard', 'very-hard', 'impossible'];
+            const difficulties = ['super-easy', 'easy', 'medium', 'hard', 'very-hard'];
             const randomDifficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
             startGame(randomDifficulty);
         }
@@ -1949,6 +2026,7 @@
             document.getElementById('message').textContent = '';
             document.getElementById('message').className = 'message';
             document.getElementById('attempts').textContent = '0';
+            document.getElementById('gameOverOptions').classList.remove('active');
             console.log('Gizli sayı:', secretNumber);
             
             // Not defterini sıfırla
@@ -1971,11 +2049,51 @@
                 hintsRemaining = parseInt(saved);
             }
             document.getElementById('hintCounter').textContent = hintsRemaining;
-            document.getElementById('hintBtn').disabled = hintsRemaining <= 0 || gameOver;
+            const hintBtn = document.getElementById('hintBtn');
+            if (hintBtn) {
+                hintBtn.disabled = hintsRemaining <= 0 || gameOver;
+            }
+        }
+
+        function useHintInGame() {
+            if (gameOver) {
+                alert('❌ Oyun bitti, ipucu alamazsınız!');
+                return;
+            }
+
+            if (hintsRemaining <= 0) {
+                alert('❌ Hiç ipucunuz kalmadı! "İpucu Al" butonuna tıklayın.');
+                openHintModal();
+                return;
+            }
+
+            // İpucu ver
+            giveHintToPlayer();
+        }
+
+        function giveHintToPlayer() {
+            const secretArray = secretNumber.split('');
+            const randomIndex = Math.floor(Math.random() * secretArray.length);
+            const hint = `${randomIndex + 1}. pozisyondaki rakam: ${secretArray[randomIndex]}`;
+            
+            // İpucu sayısını azalt
+            hintsRemaining--;
+            localStorage.setItem('hintsRemaining', hintsRemaining);
+            updateHintCounter();
+            
+            // Mesajı göster
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = `💡 İpucu: ${hint}`;
+            messageEl.className = 'message info';
+            
+            alert(`💡 İpucu: ${hint}`);
         }
 
         function openHintModal() {
-            if (gameOver || hintsRemaining <= 0) return;
+            if (gameOver && hintsRemaining > 0) {
+                // Oyun bittiyse ve ipucu varsa direkt kullan
+                return;
+            }
             document.getElementById('hintModal').classList.add('active');
             document.getElementById('codeInputSection').classList.remove('active');
             document.getElementById('hintDisplay').style.display = 'none';
@@ -2076,19 +2194,15 @@
                 return;
             }
 
-            // Rastgele bir ipucu ver
-            const secretArray = secretNumber.split('');
-            const randomIndex = Math.floor(Math.random() * secretArray.length);
-            const hint = `${randomIndex + 1}. pozisyondaki rakam: ${secretArray[randomIndex]}`;
+            // İpucu ver
+            giveHintToPlayer();
             
-            document.getElementById('hintText').textContent = hint;
-            document.getElementById('hintDisplay').style.display = 'block';
             document.getElementById('adContainer').style.display = 'none';
             
-            // İpucu sayısını azalt
-            hintsRemaining--;
-            localStorage.setItem('hintsRemaining', hintsRemaining);
-            updateHintCounter();
+            // Modal'ı kapat
+            setTimeout(() => {
+                closeHintModal();
+            }, 1000);
         }
 
         // Modal dışına tıklandığında kapat
@@ -2253,11 +2367,11 @@
                 }, numDigits * 100 + 200);
             } else if (attempts >= maxAttempts) {
                 setTimeout(() => {
-                    messageEl.textContent = `😢 Oyun bitti! Doğru sayı: ${secretNumber}`;
+                    messageEl.textContent = `😢 Tahmin hakkınız bitti!`;
                     messageEl.className = 'message error';
-                    gameOver = true;
-                    gamesPlayed++;
-                    updateStats();
+                    document.getElementById('gameOverOptions').classList.add('active');
+                    document.getElementById('gameOverHintCount').textContent = hintsRemaining;
+                    document.getElementById('gameOverHintBtn').disabled = hintsRemaining <= 0;
                     document.getElementById('guessInput').disabled = true;
                     document.getElementById('guessBtn').disabled = true;
                 }, numDigits * 100 + 200);
@@ -2265,6 +2379,56 @@
                 messageEl.textContent = `Tahmin ${attempts}/${maxAttempts}`;
                 messageEl.className = 'message info';
             }
+        }
+
+        function useHintFromGameOver() {
+            if (hintsRemaining <= 0) {
+                alert('❌ Hiç ipucunuz kalmadı! "İpucu Al" butonuna tıklayın.');
+                openHintModal();
+                return;
+            }
+
+            if (gameOver) {
+                alert('❌ Oyun bitti, ipucu alamazsınız!');
+                return;
+            }
+
+            // İpucu ver
+            giveHintToPlayer();
+            
+            // Game over butonlarını güncelle
+            document.getElementById('gameOverHintCount').textContent = hintsRemaining;
+            document.getElementById('gameOverHintBtn').disabled = hintsRemaining <= 0;
+            
+            // Game over butonlarını gizle ve devam et
+            document.getElementById('guessInput').disabled = false;
+            document.getElementById('guessBtn').disabled = false;
+            document.getElementById('gameOverOptions').classList.remove('active');
+        }
+
+        function continueGuessing() {
+            // Oyunu devam ettir - extra tahmin hakkı ver
+            const setting = difficultySettings[currentDifficulty];
+            const maxAttempts = setting.attempts;
+            
+            // 3 tahmin daha ekle
+            document.getElementById('guessInput').disabled = false;
+            document.getElementById('guessBtn').disabled = false;
+            document.getElementById('gameOverOptions').classList.remove('active');
+            document.getElementById('message').textContent = `Devam ediyorsunuz! Tahmin ${attempts}/${maxAttempts + 3}`;
+            document.getElementById('message').className = 'message info';
+        }
+
+        function revealAnswer() {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = `🎯 Doğru sayı: ${secretNumber}`;
+            messageEl.className = 'message error';
+            gameOver = true;
+            gamesPlayed++;
+            updateStats();
+            document.getElementById('gameOverOptions').classList.remove('active');
+            document.getElementById('guessInput').disabled = true;
+            document.getElementById('guessBtn').disabled = true;
         }
 
         function updateStats() {
